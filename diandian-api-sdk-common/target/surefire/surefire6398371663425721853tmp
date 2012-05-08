@@ -1,0 +1,5 @@
+#surefire
+#Wed May 02 17:54:37 CST 2012
+user.dir=/Users/zhangdong/workspace/diandian-api-sdk/diandian-api-sdk-common
+localRepository=/Users/zhangdong/.m2/repository
+basedir=/Users/zhangdong/workspace/diandian-api-sdk/diandian-api-sdk-common

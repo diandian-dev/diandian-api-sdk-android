@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, HomeActivity!</string>
+    <string name="app_name">点点sdk sample</string>
+    <string name="init">初始化</string>
+    <string name="back">返回</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="account">帐号</string>
+    <string name="password">密码</string>
+    <string name="draftqueueandsubmission">早稿,投稿,发布队列</string>
+    
+    <string name="oauth">认证</string>
+    <string name="home">首页</string>
+    <string name="blogInfo">博客</string>
+    <string name="avatar">头像</string>
+    <string name="follower">关注者</string>
+    <string name="following">我的关注</string>
+    <string name="follow">关注</string>
+    <string name="unfollow">取消关注</string>
+    <string name="likes">我的喜欢</string>
+    <string name="like">喜欢</string>
+    <string name="unlike">取消喜欢</string>
+    <string name="reblog">转载</string>
+	<string name="delete">删除</string>
+	<string name="userInfo">用户信息</string> 
+	<string name="posts">文章</string>
+	<string name="post">发布</string>
+	<string name="edit">编辑</string>
+	<string name="draft">草稿</string>
+	<string name="submission">投稿</string>
+	<string name="queue">发布队列</string>
+	   
+    <string name="oauthCode">Code方式</string>
+    <string name="oauthPassword">Password方式</string>
+    <string name="oauthRefresh">Refresh方式</string>
+    
+    
+    
+    <string name="text">文字</string>
+    <string name="link">链接</string>
+    <string name="photo">图片</string>
+    <string name="audio">音乐</string>
+    <string name="video">视频</string>
+    
+
+</resources>

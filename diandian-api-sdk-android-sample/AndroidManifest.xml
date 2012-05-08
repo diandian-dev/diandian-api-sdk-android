@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.diandian.api.sdk.android.sample"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="7" />
+	<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission> 
+	<uses-permission android:name="android.permission.WRITE_APN_SETTINGS"></uses-permission>
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <activity
+            android:name=".AllActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+             android:name=".InitActivity"
+             android:label="@string/init">
+        </activity>
+        <activity
+             android:name=".HomeActivity"
+             android:label="@string/home">
+        </activity>
+        <activity
+             android:name=".BlogInfoActivity"
+             android:label="@string/blogInfo">
+        </activity>
+        <activity
+             android:name=".AvatarActivity"
+             android:label="@string/avatar">
+        </activity>
+        <activity
+             android:name=".FollowActivity"
+             android:label="@string/follow">
+        </activity>
+        <activity
+             android:name=".LikeActivity"
+             android:label="@string/like">
+        </activity>
+        <activity
+             android:name=".PostsActivity"
+             android:label="@string/posts">
+        </activity>
+        <activity
+             android:name=".ReblogActivity"
+             android:label="@string/reblog">
+        </activity>
+        <activity
+             android:name=".DeleteActivity"
+             android:label="@string/delete">
+        </activity>
+        <activity
+             android:name=".UserInfoActivity"
+             android:label="@string/userInfo">
+        </activity>
+        <activity
+             android:name=".PostActivity"
+             android:label="@string/post">
+        </activity>
+        <activity
+             android:name=".EditActivity"
+             android:label="@string/edit">
+        </activity>
+        <activity
+             android:name=".DaftQueueAndSubmissionActivity"
+             android:label="@string/draftqueueandsubmission">
+        </activity>
+        
+    </application>
+
+</manifest>
