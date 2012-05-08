@@ -4,5 +4,5 @@
 # git has its own built in compression methods
 *.DS_Store
 *.project
-*.setting
+*.settings
 *.class
