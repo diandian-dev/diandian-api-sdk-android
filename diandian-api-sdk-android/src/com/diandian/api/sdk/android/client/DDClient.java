@@ -95,7 +95,8 @@ public class DDClient {
      * @return
      */
     public String getOauthUrl() {
-        return URL_AUTHORIZE + "client_id=" + appKey + "&response_type=code";
+    	return URL_AUTHORIZE + "?client_id=" + appKey + "&response_type=code&scope="
+                + TextUtils.join(",",DEFAULT_PERMISSIONS);
     }
 
     /**
