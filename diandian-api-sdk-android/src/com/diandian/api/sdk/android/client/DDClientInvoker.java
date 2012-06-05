@@ -4,6 +4,9 @@
 package com.diandian.api.sdk.android.client;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +20,6 @@ import com.diandian.api.sdk.android.util.PrintLog;
 import com.diandian.api.sdk.exception.DDAPIException;
 import com.diandian.api.sdk.model.BlogDetailInfo;
 import com.diandian.api.sdk.model.UserDetailInfo;
-import com.diandian.api.sdk.util.BaseUtil;
 import com.diandian.api.sdk.view.DashboardView;
 import com.diandian.api.sdk.view.FollowersView;
 import com.diandian.api.sdk.view.FollowingView;
@@ -28,8 +30,7 @@ import com.diandian.api.sdk.view.PostView;
  * 对各个业务的封装。通过调用client,anyncDDRunner等底层类实现。
  * 
  * @author zhangdong zhangdong@diandian.com
- *         2012-4-19 上午11:32:09
- * 
+ * @author Lookis (lucas@diandian.com)
  */
 public class DDClientInvoker {
 
@@ -146,7 +147,6 @@ public class DDClientInvoker {
         param.add("limit", Math.min(limit, DDAPIConstants.MAX_ITEM_PERPAGE) + "");
         param.add("offset", Math.max(0, offset) + "");
         return param;
-
     }
 
     /**
@@ -205,8 +205,7 @@ public class DDClientInvoker {
     }
 
     /**
-     * 获取post。
-     * 注：postId不为空，则取一post
+     * 获取post。 注：postId不为空，则取一post
      * 
      * @param blogCName
      * @param type
@@ -228,14 +227,10 @@ public class DDClientInvoker {
     }
 
     /**
-     * 异步获取post.获取后会调用listener.onComplete方法。
-     * 可通过bundle.get("result")的方式获取结果
-     * 例：
-     * public void onComplete(Bundle values) {
-     * String result = values.getString("result");
-     * Toast.makeText(getApplicationContext(), result,
-     * Toast.LENGTH_LONG).show();
-     * }
+     * 异步获取post.获取后会调用listener.onComplete方法。 可通过bundle.get("result")的方式获取结果
+     * 例： public void onComplete(Bundle values) { String result =
+     * values.getString("result"); Toast.makeText(getApplicationContext(),
+     * result, Toast.LENGTH_LONG).show(); }
      * 
      * @param blogCName
      * @param type
@@ -247,7 +242,6 @@ public class DDClientInvoker {
      * @param postId
      * @param listener
      */
-
     public void getPosts(String blogCName, String type, int limit, int offset, String tag,
             boolean reblogInfo, boolean notesInfo, String postId, DDListener listener) {
         String url = getPostUrlByType(type, blogCName);
@@ -304,7 +298,6 @@ public class DDClientInvoker {
      * @param notesInfo
      * @param listener
      */
-
     public void getHome(String type, int limit, int offset, String sinceId, boolean reblogInfo,
             boolean notesInfo, DDListener listener) {
         asyncDDRunner.doRequest(GET_HOME_URL,
@@ -361,7 +354,6 @@ public class DDClientInvoker {
         this.doPost(url,
                 getTextParamForPost(DDAPIConstants.POST_TEXT, state, tag, slug, title, body),
                 ddClient.getToken());
-
     }
 
     /**
@@ -381,7 +373,6 @@ public class DDClientInvoker {
         asyncDDRunner.doRequest(url,
                 getTextParamForPost(DDAPIConstants.POST_TEXT, state, tag, slug, title, body),
                 listener, true, DDAPIConstants.HTTP_POST);
-
     }
 
     private DDParameters getLinkParamForPost(String type, String state, String tag, String slug,
@@ -416,7 +407,6 @@ public class DDClientInvoker {
         String postUrl = String.format(POST_POST_FORMAT, blogCName);
         this.doPost(postUrl, this.getLinkParamForPost(DDAPIConstants.POST_LINK, state, tag, slug,
                 title, postUrl, description), ddClient.getToken());
-
     }
 
     /**
@@ -450,7 +440,6 @@ public class DDClientInvoker {
             param.add("caption", caption);
         }
         return param;
-
     }
 
     /**
@@ -468,7 +457,6 @@ public class DDClientInvoker {
         String url = String.format(POST_POST_FORMAT, blogCName);
         this.doPost(url, this.getVideoParamForPost(DDAPIConstants.POST_VIDEO, state, tag, slug,
                 caption, sourceUrl), ddClient.getToken());
-
     }
 
     /**
@@ -516,10 +504,11 @@ public class DDClientInvoker {
      * @param filePath
      * @param musicName
      * @param musicSinger
+     * @throws FileNotFoundException
      */
     public void postAudio(String blogCName, String state, String tag, String slug, String caption,
-            String filePath, String musicName, String musicSinger) {
-        byte[] data = BaseUtil.getFileData(new File(filePath));
+            String filePath, String musicName, String musicSinger) throws FileNotFoundException {
+        InputStream data = new FileInputStream(new File(filePath));
         String url = String.format(POST_POST_FORMAT, blogCName);
         ddClient.doUpload(url, this.getAudioParamForPost(DDAPIConstants.POST_AUDIO, state, tag,
                 slug, caption, musicName, musicSinger), "data", filePath, data, ddClient.getToken());
@@ -537,10 +526,12 @@ public class DDClientInvoker {
      * @param musicName
      * @param musicSinger
      * @param listener
+     * @throws FileNotFoundException
      */
     public void postAudio(String blogCName, String state, String tag, String slug, String caption,
-            String filePath, String musicName, String musicSinger, DDListener listener) {
-        byte[] data = BaseUtil.getFileData(new File(filePath));
+            String filePath, String musicName, String musicSinger, DDListener listener)
+            throws FileNotFoundException {
+        InputStream data = new FileInputStream(new File(filePath));
         String url = String.format(POST_POST_FORMAT, blogCName);
         asyncDDRunner
                 .doUpload(url, this.getAudioParamForPost(DDAPIConstants.POST_AUDIO, state, tag,
@@ -566,15 +557,15 @@ public class DDClientInvoker {
      * @param slug
      * @param caption
      * @param filePath
+     * @throws FileNotFoundException
      */
     public void postPhoto(String blogCName, String state, String tag, String slug, String caption,
-            String filePath) {
-        byte[] data = BaseUtil.getFileData(new File(filePath));
+            String filePath) throws FileNotFoundException {
+        InputStream data = new FileInputStream(new File(filePath));
         String url = String.format(POST_POST_FORMAT, blogCName);
         ddClient.doUpload(url,
                 this.getPhotoParamForPost(DDAPIConstants.POST_PHOTO, state, tag, slug, caption),
                 "data", filePath, data, ddClient.getToken());
-
     }
 
     /**
@@ -587,10 +578,11 @@ public class DDClientInvoker {
      * @param caption
      * @param filePath
      * @param listener
+     * @throws FileNotFoundException
      */
     public void postPhoto(String blogCName, String state, String tag, String slug, String caption,
-            String filePath, DDListener listener) {
-        byte[] data = BaseUtil.getFileData(new File(filePath));
+            String filePath, DDListener listener) throws FileNotFoundException {
+        InputStream data = new FileInputStream(new File(filePath));
         String url = String.format(POST_POST_FORMAT, blogCName);
         asyncDDRunner.doUpload(url,
                 this.getPhotoParamForPost(DDAPIConstants.POST_PHOTO, state, tag, slug, caption),
@@ -609,12 +601,10 @@ public class DDClientInvoker {
     public <T> T getInfo(String url, DDParameters params, Class<T> classType, Token token) {
         String result = ddClient.doGet(url, token, params);
         return json2BeanFactory.fromJson2Bean(result, classType, parser);
-
     }
 
     /**
-     * 发布信息。
-     * 异常：DDAPIException
+     * 发布信息。 异常：DDAPIException
      * 
      * @param url
      * @param params
@@ -632,13 +622,11 @@ public class DDClientInvoker {
             PrintLog.e(LOG_TAG, e.getMessage(), e);
             throw new DDAPIException(DDAPIConstants.DEFAULT_ERR_CODE, e.getMessage(), e);
         }
-
     }
 
     private DDParameters getEditParam(String type, String state, String tag, String slug,
             String title, String body, String url, String description, String caption,
             String musicName, String musicSinger, String sourceUrl, String id) {
-
         DDParameters param = null;
         if (DDAPIConstants.POST_AUDIO.equalsIgnoreCase(type)) {
             param = this.getAudioParamForPost(type, state, tag, slug, caption, musicName,
@@ -652,7 +640,6 @@ public class DDClientInvoker {
         } else if (DDAPIConstants.POST_VIDEO.equalsIgnoreCase(type)) {
             param = this.getVideoParamForPost(type, state, tag, slug, caption, sourceUrl);
         }
-
         if (param == null) {
             throw new DDAPIException(DDAPIConstants.INVALID_PARAMATERS, "invalid type type" + type,
                     null);
@@ -720,7 +707,6 @@ public class DDClientInvoker {
         this.doPost(String.format(EDIT_POST_FORMAT, blogCName), this.getEditParam(
                 DDAPIConstants.POST_LINK, state, tag, slug, title, null, url, description, null,
                 null, null, null, id), ddClient.getToken());
-
     }
 
     /**
@@ -793,10 +779,12 @@ public class DDClientInvoker {
      * @param musicSinger
      * @param id
      * @param listener
+     * @throws FileNotFoundException
      */
     public void editAudio(String blogCName, String state, String tag, String slug, String caption,
-            String filePath, String musicName, String musicSinger, String id, DDListener listener) {
-        byte[] data = BaseUtil.getFileData(new File(filePath));
+            String filePath, String musicName, String musicSinger, String id, DDListener listener)
+            throws FileNotFoundException {
+        InputStream data = new FileInputStream(new File(filePath));
         asyncDDRunner.doUpload(String.format(EDIT_POST_FORMAT, blogCName), this.getEditParam(
                 DDAPIConstants.POST_AUDIO, state, tag, slug, null, null, null, null, caption,
                 musicName, musicSinger, null, id), listener, "data", filePath, data, true);
@@ -814,14 +802,15 @@ public class DDClientInvoker {
      * @param musicName
      * @param musicSinger
      * @param id
+     * @throws FileNotFoundException
      */
     public void editAudio(String blogCName, String state, String tag, String slug, String caption,
-            String filePath, String musicName, String musicSinger, String id) {
-        byte[] data = BaseUtil.getFileData(new File(filePath));
+            String filePath, String musicName, String musicSinger, String id)
+            throws FileNotFoundException {
+        InputStream data = new FileInputStream(new File(filePath));
         ddClient.doUpload(String.format(EDIT_POST_FORMAT, blogCName), this.getEditParam(
                 DDAPIConstants.POST_AUDIO, state, tag, slug, null, null, null, null, caption,
                 musicName, musicSinger, null, id), "data", filePath, data, ddClient.getToken());
-
     }
 
     /**
@@ -834,10 +823,11 @@ public class DDClientInvoker {
      * @param caption
      * @param filePath
      * @param id
+     * @throws FileNotFoundException
      */
     public void editPhoto(String blogCName, String state, String tag, String slug, String caption,
-            String filePath, String id) {
-        byte[] data = BaseUtil.getFileData(new File(filePath));
+            String filePath, String id) throws FileNotFoundException {
+        InputStream data = new FileInputStream(new File(filePath));
         ddClient.doUpload(String.format(EDIT_POST_FORMAT, blogCName), this.getEditParam(
                 DDAPIConstants.POST_PHOTO, state, tag, slug, null, null, null, null, caption, null,
                 null, null, id), "data", filePath, data, ddClient.getToken());
@@ -854,10 +844,11 @@ public class DDClientInvoker {
      * @param filePath
      * @param id
      * @param listener
+     * @throws FileNotFoundException
      */
     public void editPhoto(String blogCName, String state, String tag, String slug, String caption,
-            String filePath, String id, DDListener listener) {
-        byte[] data = BaseUtil.getFileData(new File(filePath));
+            String filePath, String id, DDListener listener) throws FileNotFoundException {
+        InputStream data = new FileInputStream(new File(filePath));
         asyncDDRunner.doUpload(String.format(EDIT_POST_FORMAT, blogCName), this.getEditParam(
                 DDAPIConstants.POST_PHOTO, state, tag, slug, null, null, null, null, caption, null,
                 null, null, id), listener, "data", filePath, data, true);
@@ -915,7 +906,6 @@ public class DDClientInvoker {
         }
         param.add("id", id);
         return param;
-
     }
 
     /**
@@ -1068,7 +1058,6 @@ public class DDClientInvoker {
      * @param offset
      * @param listener
      */
-
     public void getFollowing(int limit, int offset, DDListener listener) {
         asyncDDRunner.doRequest(GET_FOLLOWING_URL, getParamForLimitAndOffset(limit, offset),
                 listener, true, DDAPIConstants.HTTP_GET);

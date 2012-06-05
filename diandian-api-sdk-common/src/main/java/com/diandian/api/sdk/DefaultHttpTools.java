@@ -3,6 +3,7 @@
  */
 package com.diandian.api.sdk;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -16,9 +17,8 @@ import com.diandian.api.sdk.util.BaseUtil;
 /**
  * 默认的HttpTools的实现
  * 
- * @author zhangdong zhangdong@diandian.com
- * 
- *         2012-4-27 上午11:10:36
+ * @author zhangdong
+ * @author Lookis (lucas@diandian.com)
  */
 public class DefaultHttpTools extends DDHttpTools {
 
@@ -42,7 +42,6 @@ public class DefaultHttpTools extends DDHttpTools {
                 conn.setDoOutput(true);
                 conn.getOutputStream().write(encodeUrl(params).getBytes("UTF-8"));
             }
-
             InputStream is = null;
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
@@ -71,6 +70,16 @@ public class DefaultHttpTools extends DDHttpTools {
     @Override
     public String uploadFile(String reqUrl, Map<String, String> parameters, String fileParamName,
             String filename, byte[] data, Token token) {
+        return uploadFile(reqUrl, parameters, fileParamName, filename, new ByteArrayInputStream(
+                data), token);
+    }
+
+    /* (non-Javadoc)
+     * @see com.diandian.api.sdk.DDHttpTools#uploadFile(java.lang.String, java.util.Map, java.lang.String, java.lang.String, java.io.InputStream, com.diandian.api.sdk.Token)
+     */
+    @Override
+    public String uploadFile(String reqUrl, Map<String, String> parameters, String fileParamName,
+            String filename, InputStream data, Token token) {
         HttpURLConnection urlConn = null;
         try {
             urlConn = sendFormdata(reqUrl, parameters, fileParamName, filename,
@@ -87,7 +96,7 @@ public class DefaultHttpTools extends DDHttpTools {
     }
 
     public static HttpURLConnection sendFormdata(String reqUrl, Map<String, String> parameters,
-            String fileParamName, String filename, String contentType, byte[] data, Token token) {
+            String fileParamName, String filename, String contentType, InputStream data, Token token) {
         HttpURLConnection urlConn = null;
         try {
             URL url = new URL(reqUrl);
@@ -104,7 +113,6 @@ public class DefaultHttpTools extends DDHttpTools {
             urlConn.setRequestProperty("Authorization", "bearer " + token.getAccessToken());
             String boundary = "-----------------------------114975832116442893661388290519"; // 分隔符
             urlConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-
             boundary = "--" + boundary;
             StringBuffer params = new StringBuffer();
             if (parameters != null) {
@@ -118,7 +126,6 @@ public class DefaultHttpTools extends DDHttpTools {
                     params.append("\r\n");
                 }
             }
-
             StringBuilder sb = new StringBuilder();
             sb.append(boundary);
             sb.append("\r\n");
@@ -128,11 +135,16 @@ public class DefaultHttpTools extends DDHttpTools {
             byte[] fileDiv = sb.toString().getBytes();
             byte[] endData = ("\r\n" + boundary + "--\r\n").getBytes();
             byte[] ps = params.toString().getBytes();
-
             OutputStream os = urlConn.getOutputStream();
             os.write(ps);
             os.write(fileDiv);
-            os.write(data);
+            int dataLength = data.available();
+            while (dataLength > 0) {
+                byte[] buffer = new byte[1024];
+                int read = data.read(buffer);
+                os.write(buffer);
+                dataLength -= read;
+            }
             os.write(endData);
             os.flush();
             os.close();
@@ -141,5 +153,4 @@ public class DefaultHttpTools extends DDHttpTools {
         }
         return urlConn;
     }
-
 }

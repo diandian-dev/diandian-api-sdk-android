@@ -3,6 +3,8 @@
  */
 package com.diandian.api.sdk.android.client;
 
+import java.io.InputStream;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +13,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.CookieSyncManager;
@@ -24,16 +25,15 @@ import com.diandian.api.sdk.android.util.PrintLog;
 import com.diandian.api.sdk.exception.DDAPIException;
 
 /**
- * DDClient,负责基础功能。
- * 当DDClientInvoker中没有相应的业务支持时，可用此类实现
+ * DDClient,负责基础功能。 当DDClientInvoker中没有相应的业务支持时，可用此类实现
  * 
  * @author zhangdong <zhangdong@diandian.com>
- *         2012-4-9下午4:37:45
+ * @author Lookis (lucas@diandian.com)
  */
 public class DDClient {
 
     static {
-        stick();
+        //        stick();
     }
 
     private Token token = null;
@@ -95,8 +95,8 @@ public class DDClient {
      * @return
      */
     public String getOauthUrl() {
-    	return URL_AUTHORIZE + "?client_id=" + appKey + "&response_type=code&scope="
-                + TextUtils.join(",",DEFAULT_PERMISSIONS);
+        return URL_AUTHORIZE + "?client_id=" + appKey + "&response_type=code&scope="
+                + TextUtils.join(",", DEFAULT_PERMISSIONS);
     }
 
     /**
@@ -122,7 +122,6 @@ public class DDClient {
      * @param userPassword
      * @param listener
      */
-
     public void initAccessTokenByPassword(String userName, String userPassword, DDListener listener) {
         DDParameters param = new DDParameters();
         param.add("client_id", this.getAppKey());
@@ -135,8 +134,7 @@ public class DDClient {
     }
 
     /**
-     * refreshToken
-     * token过期后使用
+     * refreshToken token过期后使用
      * 
      * @param listener
      */
@@ -154,7 +152,6 @@ public class DDClient {
             listener = new DefaultDDListener();
         }
         this.initAccessToken(param, listener);
-
     }
 
     private synchronized void initAccessToken(DDParameters param, DDListener listener) {
@@ -189,8 +186,7 @@ public class DDClient {
     }
 
     /**
-     * 判断当前session是否可用。
-     * 过期和null皆为不可用
+     * 判断当前session是否可用。 过期和null皆为不可用
      * 
      * @return
      */
@@ -202,19 +198,16 @@ public class DDClient {
         return false;
     }
 
-    private static void stick() {
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads()
-                .detectDiskWrites().detectNetwork() // or .detectAll() for all detectable problems       
-                .penaltyLog().build());
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()
-                .penaltyLog().penaltyDeath().build());
-    }
-
+    //    private static void stick() {
+    //        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads()
+    //                .detectDiskWrites().detectNetwork() // or .detectAll() for all detectable problems       
+    //                .penaltyLog().build());
+    //        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()
+    //                .penaltyLog().penaltyDeath().build());
+    //    }
     /**
-     * 获取有效的token.
-     * 如果token无效，则
-     * throw new DDAPIException(DDAPIConstants.INVALID_TOKEN,
-     * "invalid token", null);
+     * 获取有效的token. 如果token无效，则 throw new
+     * DDAPIException(DDAPIConstants.INVALID_TOKEN, "invalid token", null);
      * 
      * @return
      */
@@ -227,8 +220,7 @@ public class DDClient {
     }
 
     /**
-     * 获取token.
-     * 结果可能为空，可能过期，因为不能直接使用
+     * 获取token. 结果可能为空，可能过期，因为不能直接使用
      * 
      * @return
      */
@@ -285,8 +277,7 @@ public class DDClient {
      * 
      * @param activity
      * 
-     * @param listener
-     *        授权结果监听器
+     * @param listener 授权结果监听器
      */
     public void authorize(Activity activity, final DDListener listener) {
         authorize(activity, DEFAULT_PERMISSIONS, listener);
@@ -326,7 +317,6 @@ public class DDClient {
             public void onCancel() {
                 ddListener.onCancel();
             }
-
         });
     }
 
@@ -341,7 +331,6 @@ public class DDClient {
         } else {
             new DDDialog(this, context, url, listener).show();
         }
-
     }
 
     public String doGet(String url, Token token, DDParameters ddParameters) {
@@ -353,11 +342,10 @@ public class DDClient {
     }
 
     public String doUpload(String reqUrl, DDParameters parameters, String fileParamName,
-            String filename, byte[] data, Token token) {
+            String filename, InputStream data, Token token) {
         try {
             return ddHttpTools.uploadFile(reqUrl, AndroidUtil.ddParameters2Map(parameters),
                     fileParamName, filename, data, token);
-
         } catch (Exception e) {
             PrintLog.d(LOG_TAG, e.getMessage(), e);
             throw new DDAPIException(DDAPIConstants.UPLOAD_FAILED, e.getMessage(), e);

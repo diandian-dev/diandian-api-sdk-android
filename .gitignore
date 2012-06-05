@@ -6,3 +6,5 @@
 *.project
 *.settings
 *.class
+diandian-api-sdk-android/project.properties
+diandian-api-sdk-android/.classpath

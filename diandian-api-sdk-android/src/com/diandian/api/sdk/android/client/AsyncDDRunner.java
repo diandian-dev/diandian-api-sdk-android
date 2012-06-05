@@ -3,6 +3,7 @@
  */
 package com.diandian.api.sdk.android.client;
 
+import java.io.InputStream;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -15,9 +16,10 @@ import com.diandian.api.sdk.exception.DDAPIException;
 /**
  * 
  * 异步执行器，功能为新建线程，后台执行并回调相应的接口
- * 2012-4-18 下午4:48:45
+ * 
  * 
  * @author zhangdong zhangdong@diandian.com
+ * @author Lookis (lucas@diandian.com)
  */
 public class AsyncDDRunner {
 
@@ -33,8 +35,7 @@ public class AsyncDDRunner {
     }
 
     /**
-     * 异步执行get或post请求。正常完成后回调DDListener.onComplelte(Bundle bundle).
-     * 取数据方法为
+     * 异步执行get或post请求。正常完成后回调DDListener.onComplelte(Bundle bundle). 取数据方法为
      * String result = bundle.getString("result");
      * 
      * @param url
@@ -56,7 +57,6 @@ public class AsyncDDRunner {
                     if (needToken) {
                         token = ddClient.getToken();
                     }
-
                     if ("GET".equalsIgnoreCase(method)) {
                         result = ddClient.doGet(url, token, params);
                     } else {
@@ -73,9 +73,8 @@ public class AsyncDDRunner {
     }
 
     /**
-     * 异步执行上传功能。正常完成后回调DDListener.onComplelte(Bundle bundle).
-     * 取数据方法为
-     * String result = bundle.getString("result");
+     * 异步执行上传功能。正常完成后回调DDListener.onComplelte(Bundle bundle). 取数据方法为 String
+     * result = bundle.getString("result");
      * 
      * @param url
      * @param params
@@ -85,9 +84,8 @@ public class AsyncDDRunner {
      * @param data 文件数据
      * @param needToken
      */
-
     public void doUpload(final String url, final DDParameters params, final DDListener ddListener,
-            final String fileParamName, final String filename, final byte[] data,
+            final String fileParamName, final String filename, final InputStream data,
             final boolean needToken) {
         pool.execute(new Runnable() {
 
@@ -108,7 +106,5 @@ public class AsyncDDRunner {
                 }
             }
         });
-
     }
-
 }
